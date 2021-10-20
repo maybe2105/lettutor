@@ -4,6 +4,7 @@ import 'package:lettutor/pages/authen/login_page.dart';
 import 'package:lettutor/pages/authen/resetpw_page.dart';
 import 'package:lettutor/pages/authen/signup_page.dart';
 import 'package:lettutor/pages/main/main_page.dart';
+import 'package:lettutor/pages/profile/profile_page.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +33,7 @@ class MyApp extends StatelessWidget {
         ),
         primarySwatch: Colors.blue,
       ),
-      home: const MainPage(),
+      home: const ProfilePage(),
 
     );
   }

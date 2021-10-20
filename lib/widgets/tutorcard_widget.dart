@@ -29,13 +29,14 @@ class _TutorCardWidgetState extends State<TutorCardWidget> {
       elevation: 10,
       margin: const EdgeInsets.all(16),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(vertical: 16),
             child: Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(16,8,8,8),
+                  padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
                   child: Image(
                     image: NetworkImage(widget.avatar),
                     width: 40,

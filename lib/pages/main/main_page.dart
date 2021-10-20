@@ -4,6 +4,7 @@ import 'package:lettutor/pages/main/message/message_page.dart';
 import 'package:lettutor/pages/main/setting/setting_page.dart';
 import 'package:lettutor/pages/main/tutor/tutor_page.dart';
 import 'package:lettutor/pages/main/upcoming/upcoming_page.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class MainPage extends StatefulWidget {
   const MainPage({Key? key}) : super(key: key);
@@ -60,7 +61,7 @@ class _MainPageState extends State<MainPage> {
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.message),
+            icon: Icon(MdiIcons.wechat),
             label: "Message",
           ),
           BottomNavigationBarItem(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lettutor/widgets/settingitem_widget.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -64,17 +65,17 @@ class _SettingPageState extends State<SettingPage> {
                 onClick: () {},
               ),
               SettingItem(
-                icon: Icons.person,
+                icon: Icons.menu,
                 text: "Booking",
                 onClick: () {},
               ),
               SettingItem(
-                icon: Icons.person,
+                icon: Icons.history,
                 text: "Session",
                 onClick: () {},
               ),
               SettingItem(
-                icon: Icons.person,
+                icon: Icons.settings,
                 text: "Advanced Settings",
                 onClick: () {},
               ),
@@ -82,12 +83,12 @@ class _SettingPageState extends State<SettingPage> {
                 height: 28,
               ),
               SettingItem(
-                icon: Icons.person,
+                icon: MdiIcons.web,
                 text: "Our website",
                 onClick: () {},
               ),
               SettingItem(
-                icon: Icons.person,
+                icon: Icons.facebook_outlined,
                 text: "Facebook",
                 onClick: () {},
               ),
