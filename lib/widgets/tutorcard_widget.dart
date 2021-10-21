@@ -70,7 +70,7 @@ class _TutorCardWidgetState extends State<TutorCardWidget> {
                             onRatingUpdate: (rating) {},
                           ),
                         ),
-                        const TutorCardTag()
+                        const TutorCardTag(content:"English")
                       ],
                     ),
                   ),
