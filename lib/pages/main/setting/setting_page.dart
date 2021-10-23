@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:lettutor/pages/courses/history_page.dart';
+import 'package:lettutor/pages/courses/session_history_page.darr.dart';
+import 'package:lettutor/pages/profile/profile_page.dart';
 import 'package:lettutor/widgets/settingitem_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -10,6 +13,11 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
+
+  final avatar = "https://static.wikia.nocookie"
+      ".net/lolesports_gamepedia_en/images/f/f5/DWG_ShowMaker_2020_Split_2"
+      ".png/revision/latest/scale-to-width-down/250?cb=20200903154623";
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,32 +37,38 @@ class _SettingPageState extends State<SettingPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Row(
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16),
-                    child: Image(
-                      image: NetworkImage("https://static.wikia.nocookie"
-                          ".net/lolesports_gamepedia_en/images/f/f5/DWG_ShowMaker_2020_Split_2"
-                          ".png/revision/latest/scale-to-width-down/250?cb=20200903154623"),
-                      width: 60,
-                      height: 60,
-                    ),
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text(
-                        "Nguyễn Khắc Luân",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+              GestureDetector(
+                onTap: (){
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const ProfilePage()),
+                  );
+                },
+                child: Row(
+                  children: [
+                     Padding(
+                      padding:const EdgeInsets.symmetric(horizontal: 16),
+                      child: Image(
+                        image: NetworkImage(avatar),
+                        width: 60,
+                        height: 60,
                       ),
-                      Text("luannguyen210500@gmail.com")
-                    ],
-                  )
-                ],
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: const [
+                        Text(
+                          "Nguyễn Khắc Luân",
+                          style: TextStyle(
+                            fontSize: 20,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        Text("luannguyen210500@gmail.com")
+                      ],
+                    )
+                  ],
+                ),
               ),
               const SizedBox(
                 height: 20,
@@ -67,12 +81,22 @@ class _SettingPageState extends State<SettingPage> {
               SettingItem(
                 icon: Icons.menu,
                 text: "Booking",
-                onClick: () {},
+                onClick: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const StudentBookingHistoryPage()),
+                  );
+                },
               ),
               SettingItem(
                 icon: Icons.history,
                 text: "Session",
-                onClick: () {},
+                onClick: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const SessionHistoryPage()),
+                  );
+                },
               ),
               SettingItem(
                 icon: Icons.settings,

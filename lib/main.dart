@@ -3,9 +3,10 @@ import 'package:lettutor/pages/authen/forgotpw_page.dart';
 import 'package:lettutor/pages/authen/login_page.dart';
 import 'package:lettutor/pages/authen/resetpw_page.dart';
 import 'package:lettutor/pages/authen/signup_page.dart';
+import 'package:lettutor/pages/courses/history_page.dart';
 import 'package:lettutor/pages/main/main_page.dart';
 import 'package:lettutor/pages/profile/profile_page.dart';
-import 'package:lettutor/pages/schedule/bookingtutor_page.dart';
+import 'package:lettutor/pages/profile/tutor_detail_page.dart';
 import 'package:lettutor/pages/schedule/timetable_page.dart';
 
 void main() {
@@ -35,7 +36,7 @@ class MyApp extends StatelessWidget {
         ),
         primarySwatch: Colors.blue,
       ),
-      home: const TimeTablePage(),
+      home: const MainPage(),
 
     );
   }

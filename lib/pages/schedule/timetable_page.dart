@@ -60,12 +60,12 @@ class _TimeTablePageState extends State<TimeTablePage> {
               child: Column(
                 children: const [
                   Text(
-                    "Đây là danh sách những khung giờ bạn được đặt",
+                    "Đây là danh sách những khung giờ bạn đặt",
                     style: TextStyle(fontSize: 20, color: Colors.grey),
                   ),
                   Text(
-                      "Bạn có thể theo dõi xem ai đặt lịch của bạn, khi nào buổi học bắt đầu và tham gia buổi học bằng một cú nhấp "
-                      "chuột",
+                      "Bạn có thể theo dõi khi nào buổi học bắt đầu và tham gia buổi học bằng một cú nhấp "
+                      "chuột hoặc huỷ buổi học trước 2 tiến",
                       style: TextStyle(fontSize: 20, color: Colors.grey))
                 ],
               ),
@@ -103,7 +103,49 @@ class _TimeTablePageState extends State<TimeTablePage> {
                 )
               ],
             ),
-          )
+          ),
+          Table(
+            border: TableBorder.all(
+              color: const Color(0xfff0f0f0),
+              style: BorderStyle.solid,
+              width: 1,
+            ),
+            children: [
+              TableRow(
+                decoration: const BoxDecoration(
+                  color: Color(0xfff0f0f0),
+                ),
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        child: const Text(
+                          'Notes',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                          ),
+                          textAlign: TextAlign.left,
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              TableRow(
+                children: [
+                  Container(
+                      padding: const EdgeInsets.all(16),
+                      child: TextFormField(
+                        minLines: 5,
+                        maxLines: 5,
+                        decoration: const InputDecoration(border: OutlineInputBorder()),
+                      )),
+                ],
+              )
+            ],
+          ),
         ],
       ),
     );

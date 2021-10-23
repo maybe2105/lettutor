@@ -74,26 +74,28 @@ class _TutorPageState extends State<TutorPage> {
               ),
               const NoFavoriteTutorCard(
                   name: "Khắc Luân",
+                  avatar:"https://static.wikia.nocookie.net/lolesports_gamepedia_en/images/4/48/HLE_Chovy_2021_Split_1.png/revision/latest/scale-to-width-down/250?cb=20210211035132",
+                  star: 5,
+                  content:
+                      "lorem ipsum text test no content,lorem ipsum text test no content,lorem ipsum text test no content,lorem ipsum text test no contentlorem ipsum text test no content"),
+              const NoFavoriteTutorCard(
+                  name: "Test name",
+                  avatar:
+                      "https://static.wikia.nocookie.net/towerofgod/images/2/26/BaamS3Ch64.png/revision/latest?cb=20200604164221",
+                  star: 3.5,
+                  content:
+                      "It is a long established fact that a reader will be distracted by the readable content of a page when looking at its layout. The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum"),
+              const NoFavoriteTutorCard(
+                  name: "DK Shoemaker",
                   avatar:
                       "https://static.wikia.nocookie.net/lolesports_gamepedia_en/images/f/f5/DWG_ShowMaker_2020_Split_2.png/revision/latest/scale-to-width-down/250?cb=20200903154623",
-                  star: 5,
-                  content: "lorem ipsum text test no content"),
+                  star: 2.5,
+                  content:
+                      "There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, by injected humour, or randomised words which don't look even slightly believable. If you are going to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. All the Lorem Ipsum generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a"),
               const NoFavoriteTutorCard(
                   name: "Khắc Luân",
                   avatar:
-                  "https://static.wikia.nocookie.net/lolesports_gamepedia_en/images/f/f5/DWG_ShowMaker_2020_Split_2.png/revision/latest/scale-to-width-down/250?cb=20200903154623",
-                  star: 5,
-                  content: "lorem ipsum text test no content"),
-              const NoFavoriteTutorCard(
-                  name: "Khắc Luân",
-                  avatar:
-                  "https://static.wikia.nocookie.net/lolesports_gamepedia_en/images/f/f5/DWG_ShowMaker_2020_Split_2.png/revision/latest/scale-to-width-down/250?cb=20200903154623",
-                  star: 5,
-                  content: "lorem ipsum text test no content"),
-              const NoFavoriteTutorCard(
-                  name: "Khắc Luân",
-                  avatar:
-                  "https://static.wikia.nocookie.net/lolesports_gamepedia_en/images/f/f5/DWG_ShowMaker_2020_Split_2.png/revision/latest/scale-to-width-down/250?cb=20200903154623",
+                      "https://static.wikia.nocookie.net/lolesports_gamepedia_en/images/f/f5/DWG_ShowMaker_2020_Split_2.png/revision/latest/scale-to-width-down/250?cb=20200903154623",
                   star: 5,
                   content: "lorem ipsum text test no content")
             ],

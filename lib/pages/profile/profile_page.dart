@@ -6,6 +6,7 @@ import 'package:lettutor/widgets/rounded_avatar_widget.dart';
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
 
+
   @override
   _ProfilePageState createState() => _ProfilePageState();
 }
@@ -66,7 +67,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         CustomCircleAvatar(
                             dimension: 75,
                             avatarUrl:
-                                'https://cdn.dribbble.com/users/1003944/screenshots/10412487/dribbble_angry_4x.gif?compress=1&resize=400x300'),
+                                'https://static.wikia.nocookie.net/lolesports_gamepedia_en/images/f/f5/DWG_ShowMaker_2020_Split_2.png/revision/latest/scale-to-width-down/250?cb=20200903154623'),
                         Positioned(
                           child: Icon(Icons.camera_alt),
                           bottom: 0,

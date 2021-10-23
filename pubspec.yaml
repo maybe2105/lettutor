@@ -73,6 +73,8 @@ flutter:
     - assets/facebook_logo.svg
     - assets/google_logo.svg
     - assets/phone_logo.svg
+    - assets/history.svg
+    - assets/calendar.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

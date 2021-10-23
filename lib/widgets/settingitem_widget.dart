@@ -17,7 +17,9 @@ class SettingItem extends StatelessWidget {
         borderRadius: BorderRadius.circular(32),
       ),
       child: GestureDetector(
-        onTap:()=>onClick,
+        onTap:() {
+          onClick();
+        },
         child: Padding(
           padding: const EdgeInsets.all(12.0),
           child: Row(

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:lettutor/pages/profile/tutor_detail_page.dart';
+import 'package:lettutor/pages/schedule/private_message_page.dart';
 import 'package:lettutor/widgets/tutorcardtag_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -70,7 +72,7 @@ class _TutorCardWidgetState extends State<TutorCardWidget> {
                             onRatingUpdate: (rating) {},
                           ),
                         ),
-                        const TutorCardTag(content:"English")
+                        const TutorCardTag(content: "English")
                       ],
                     ),
                   ),
@@ -87,6 +89,82 @@ class _TutorCardWidgetState extends State<TutorCardWidget> {
               overflow: TextOverflow.ellipsis,
               maxLines: 3,
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => TutorDetailPage(
+                                name: widget.name,
+                                avatar: widget.avatar,
+                                star: widget.star,
+                              )),
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(border: Border.all(color: Colors.blue), borderRadius: BorderRadius.circular(16)),
+                    padding: EdgeInsets.fromLTRB(12, 4, 12, 4),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.calendar_today,
+                          color: Colors.blue,
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text(
+                          "Đặt lịch",
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  width: 16,
+                ),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => PrivateMessagePage(
+                        name: widget.name,
+                        avatar: widget.avatar,
+                      ),
+                    ));
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(border: Border.all(color: Colors.blue), borderRadius: BorderRadius.circular(16)),
+                    padding: EdgeInsets.fromLTRB(12, 4, 12, 4),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.message,
+                          color: Colors.blue,
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text(
+                          "Nhắn tin",
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+          const SizedBox(
+            height: 16,
           )
         ],
       ),
