@@ -182,20 +182,48 @@ class _CoursesPageState extends State<CoursesPage> {
               ),
             ),
             Wrap(
-              children: const [
-                CoursesItem(
-                  title: "Healthy Mind, Healthy Body (New)",
-                  subTitle: "Let's discuss the many aspects of living a long, happy life",
-                  lesson: "6",
-                  level: "Intermediate",
-                  banner: "assets/intermediate-contro.png",
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CourseDetailPage(
+                              title: "Healthy Mind, Healthy Body (New)",
+                              subTitle: "Let's discuss the many aspects of living a long, happy life",
+                              lesson: "6",
+                              level: 'Intermediate',
+                              banner: "assets/intermediate-contro.png")),
+                    );
+                  },
+                  child: const CoursesItem(
+                    title: "Healthy Mind, Healthy Body (New)",
+                    subTitle: "Let's discuss the many aspects of living a long, happy life",
+                    lesson: "6",
+                    level: "Intermediate",
+                    banner: "assets/intermediate-contro.png",
+                  ),
                 ),
-                CoursesItem(
-                  title: "Movies and Television (New)",
-                  subTitle: "Let's discuss our preferences and habits surrounding movies and television shows",
-                  lesson: "10",
-                  level: "Beginner",
-                  banner: "assets/beginner-contro.png",
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const CourseDetailPage(
+                              title: "Movies and Television (New)",
+                              subTitle: "Let's discuss the many aspects of living a long, happy life",
+                              lesson: "6",
+                              level: 'Beginner',
+                              banner: "assets/beginner-contro.png")),
+                    );
+                  },
+                  child: const CoursesItem(
+                    title: "Movies and Television (New)",
+                    subTitle: "Let's discuss our preferences and habits surrounding movies and television shows",
+                    lesson: "10",
+                    level: "Beginner",
+                    banner: "assets/beginner-contro.png",
+                  ),
                 )
               ],
             ),
