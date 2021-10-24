@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lettutor/pages/courses/courses_page.dart';
 import 'package:lettutor/pages/courses/history_page.dart';
 import 'package:lettutor/pages/courses/session_history_page.darr.dart';
 import 'package:lettutor/pages/profile/profile_page.dart';
@@ -95,6 +96,16 @@ class _SettingPageState extends State<SettingPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const SessionHistoryPage()),
+                  );
+                },
+              ),
+              SettingItem(
+                icon: MdiIcons.school,
+                text: "Courses",
+                onClick: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const CoursesPage()),
                   );
                 },
               ),
