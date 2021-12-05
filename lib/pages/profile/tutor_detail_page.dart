@@ -14,6 +14,7 @@ import 'package:lettutor/widgets/tag.dart';
 import 'package:lettutor/widgets/taglist_widget.dart';
 import 'package:lettutor/widgets/time_table.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:video_player/video_player.dart';
 
 class TutorDetailPage extends StatefulWidget {
   const TutorDetailPage({Key? key, required this.tutor}) : super(key: key);
@@ -36,6 +37,27 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
     return result / widget.tutor.feedbacks!.length;
   }
 
+  VideoPlayerController? videoController;
+  Future<void>? initializeVideoPlayerFuture;
+
+  @override
+  void dispose() {
+    videoController!.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    if(widget.tutor.video != null) {
+      videoController =
+          VideoPlayerController.network(widget.tutor.video ?? "");
+      initializeVideoPlayerFuture =
+          videoController!.initialize();
+      videoController!.setLooping(true);
+      videoController!.play();
+    }
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -220,22 +242,40 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                   const SizedBox(
                     height: 8,
                   ),
-                  Container(
-                    width: double.infinity,
-                    height: 200,
-                    decoration: const BoxDecoration(color: Colors.black54),
-                    child: const Center(child: Text("Mockup Video Player")),
-                  ),
+                  initializeVideoPlayerFuture != null
+                      ? Container(
+                          child: FutureBuilder(
+                            future: initializeVideoPlayerFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.done) {
+                                return AspectRatio(
+                                  aspectRatio: videoController!.value.aspectRatio,
+                                  child: VideoPlayer(videoController!),
+                                );
+                              } else {
+                                return const Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                            },
+                          ),
+                        )
+                      : Container(
+                          width: double.infinity,
+                          height: 200,
+                          decoration: const BoxDecoration(color: Colors.black54),
+                          child: const Center(child: Text("No Video Uploaded")),
+                        ),
                   const Text(
                     'Languages',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                    child:  TagsList(
-                        tagsList: widget.tutor.languages!.split(",").toList(),
-                        selectFirstItem: false,
-                        readOnly: true,
+                    child: TagsList(
+                      tagsList: widget.tutor.languages!.split(",").toList(),
+                      selectFirstItem: false,
+                      readOnly: true,
                     ),
                   ),
                   const Text(
@@ -244,30 +284,10 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                    child: Wrap(
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 0, 8, 8),
-                          child: Tag(
-                            text: 'English for business',
-                            isActive: true,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 0, 8, 8),
-                          child: Tag(
-                            text: 'Advanced',
-                            isActive: true,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 0, 8, 8),
-                          child: Tag(
-                            text: 'English for kids',
-                            isActive: true,
-                          ),
-                        ),
-                      ],
+                    child: TagsList(
+                      tagsList: widget.tutor.specialties!.split(",").toList(),
+                      selectFirstItem: false,
+                      readOnly: true,
                     ),
                   ),
                   const Text(
@@ -277,12 +297,12 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: RichText(
-                      text: const TextSpan(
+                      text: TextSpan(
                           text: 'Demo Course: ',
                           style: TextStyle(color: Colors.black, fontSize: 20, fontWeight: FontWeight.bold),
                           children: [
                             TextSpan(
-                                text: 'Link', style: TextStyle(color: Colors.blue, fontSize: 16, fontWeight: FontWeight.normal))
+                                text: "Link", style: TextStyle(color: Colors.blue, fontSize: 16, fontWeight: FontWeight.normal))
                           ]),
                     ),
                   ),
@@ -290,22 +310,21 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                     'Interests',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                   ),
-                  const Padding(
-                    padding: EdgeInsets.all(16),
+                   Padding(
+                    padding: const EdgeInsets.all(16),
                     child: Text(
-                      "Lorem ipsum sample text interest of tutor sample text is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic",
-                      style: TextStyle(color: Colors.black45),
+                      widget.tutor.interests ?? "No interest",
+                      style: const TextStyle(color: Colors.black45),
                     ),
                   ),
                   const Text(
                     'Teaching experience',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                   ),
-                  const Padding(
+                   Padding(
                     padding: EdgeInsets.all(16),
                     child: Text(
-                      "Sample text of teacher lorem ipsume is simply dummy text of the printing and typesetting industry. "
-                      "Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic",
+                      widget.tutor.experience ?? "No information",
                       style: TextStyle(color: Colors.black45),
                     ),
                   ),

@@ -22,7 +22,14 @@ class SettingPage extends StatefulWidget {
 class _SettingPageState extends State<SettingPage> {
 
   UserDTO? user;
-
+  Future<void> loadJsonData() async {
+    var jsonText = await rootBundle.loadString("assets/user.json");
+    Map<String, dynamic> mapper = jsonDecode(jsonText);
+    UserDTO result = UserDTO.fromJson(mapper);
+    setState(() {
+      user = result;
+    });
+  }
   displayDialog(BuildContext context, String title, Widget content) {
     Navigator.push(
       context,
@@ -34,14 +41,7 @@ class _SettingPageState extends State<SettingPage> {
     );
   }
 
-  Future<void> loadJsonData() async {
-    var jsonText = await rootBundle.loadString("assets/user.json");
-    Map<String, dynamic> mapper = jsonDecode(jsonText);
-    UserDTO result = UserDTO.fromJson(mapper);
-    setState(() {
-      user = result;
-    });
-  }
+
 
   @override
   void initState() {

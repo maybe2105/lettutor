@@ -1,5 +1,9 @@
+import 'dart:convert';
+
 import 'package:country_picker/country_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:lettutor/models/user_dto.dart';
 import 'package:lettutor/widgets/primary_button_rounded.dart';
 import 'package:lettutor/widgets/rounded_avatar_widget.dart';
 
@@ -14,6 +18,24 @@ class ProfilePage extends StatefulWidget {
 class _ProfilePageState extends State<ProfilePage> {
   DateTime selectedDate = DateTime.now();
   var countryName = 'Vietnam';
+
+  UserDTO? user;
+  Future<void> loadJsonData() async {
+    var jsonText = await rootBundle.loadString("assets/user.json");
+    Map<String, dynamic> mapper = jsonDecode(jsonText);
+    UserDTO result = UserDTO.fromJson(mapper);
+    setState(() {
+      user = result;
+      selectedDate = DateTime.parse(result.birthday ?? "");
+      countryName = result.country ?? "";
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadJsonData();
+  }
 
   _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -63,12 +85,12 @@ class _ProfilePageState extends State<ProfilePage> {
                 child: Column(
                   children: [
                     Stack(
-                      children: const [
+                      children:  [
                         CustomCircleAvatar(
                             dimension: 75,
-                            avatarUrl:
-                                'https://static.wikia.nocookie.net/lolesports_gamepedia_en/images/f/f5/DWG_ShowMaker_2020_Split_2.png/revision/latest/scale-to-width-down/250?cb=20200903154623'),
-                        Positioned(
+                            avatarUrl: user?.avatar ?? "https://previews.123rf"
+                                ".com/images/latkun/latkun1712/latkun171200130/92172856-empty-transparent-background-seamless-pattern.jpg"),
+                        const Positioned(
                           child: Icon(Icons.camera_alt),
                           bottom: 0,
                           right: 0,
@@ -78,16 +100,16 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(
                       height: 8,
                     ),
-                    const Text(
-                      'Nguyễn Khắc Luân',
-                      style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
+                     Text(
+                      user?.name ?? "",
+                      style: const TextStyle(color: Colors.black, fontWeight: FontWeight.bold, fontSize: 16),
                     ),
                     const SizedBox(
                       height: 12,
                     ),
-                    const Text(
-                      'luannguyen210500@gmail.com',
-                      style: TextStyle(color: Colors.black54, fontWeight: FontWeight.w500),
+                     Text(
+                      user?.email ?? "",
+                      style: const TextStyle(color: Colors.black54, fontWeight: FontWeight.w500),
                     )
                   ],
                 ),
@@ -130,10 +152,12 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               TextFormField(
                 maxLines: 1,
+                initialValue: user?.phone ?? "",
                 decoration: InputDecoration(
                   isDense: true,
                   hintText: 'Phone number',
                   border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+
                 ),
               ),
               const SizedBox(
