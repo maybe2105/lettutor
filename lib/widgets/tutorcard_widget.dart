@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:lettutor/models/tutor_dto.dart';
 import 'package:lettutor/pages/profile/tutor_detail_page.dart';
 import 'package:lettutor/pages/schedule/private_message_page.dart';
 import 'package:lettutor/widgets/tutorcardtag_widget.dart';
@@ -7,24 +8,26 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 
 class TutorCardWidget extends StatefulWidget {
   const TutorCardWidget(
-      {Key? key, required this.name, required this.avatar, required this.star, required this.isFavorite, required this.content})
+      {Key? key,  required this.tutorData})
       : super(key: key);
 
-  final String name;
-
-  final String avatar;
-
-  final double star;
-
-  final bool isFavorite;
-
-  final String content;
+ final TutorDTO tutorData;
 
   @override
   _TutorCardWidgetState createState() => _TutorCardWidgetState();
 }
 
 class _TutorCardWidgetState extends State<TutorCardWidget> {
+
+  double getTotalRating() {
+    double result = 0;
+    for (var i = 0; i < widget.tutorData.feedbacks!.length; i++) {
+      result = result + widget.tutorData.feedbacks!.elementAt(i).rating!;
+    }
+
+    return result / widget.tutorData.feedbacks!.length;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -40,7 +43,7 @@ class _TutorCardWidgetState extends State<TutorCardWidget> {
                 Padding(
                   padding: const EdgeInsets.fromLTRB(16, 8, 8, 8),
                   child: Image(
-                    image: NetworkImage(widget.avatar),
+                    image: NetworkImage(widget.tutorData.avatar ?? ""),
                     width: 40,
                     height: 40,
                   ),
@@ -53,12 +56,12 @@ class _TutorCardWidgetState extends State<TutorCardWidget> {
                       children: [
                         Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 8),
-                          child: Text(widget.name),
+                          child: Text(widget.tutorData.name ?? ""),
                         ),
                         Padding(
                           padding: const EdgeInsets.fromLTRB(4, 8, 8, 8),
                           child: RatingBar.builder(
-                            initialRating: widget.star,
+                            initialRating: getTotalRating(),
                             ignoreGestures: true,
                             itemSize: 20,
                             minRating: 1,
@@ -84,7 +87,7 @@ class _TutorCardWidgetState extends State<TutorCardWidget> {
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
             child: Text(
-              widget.content,
+              widget.tutorData.bio ?? "",
               textAlign: TextAlign.left,
               overflow: TextOverflow.ellipsis,
               maxLines: 3,
@@ -102,17 +105,15 @@ class _TutorCardWidgetState extends State<TutorCardWidget> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => TutorDetailPage(
-                                name: widget.name,
-                                avatar: widget.avatar,
-                                star: widget.star,
+                              tutor: widget.tutorData,
                               )),
                     );
                   },
                   child: Container(
                     decoration: BoxDecoration(border: Border.all(color: Colors.blue), borderRadius: BorderRadius.circular(16)),
-                    padding: EdgeInsets.fromLTRB(12, 4, 12, 4),
+                    padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
                     child: Row(
-                      children: [
+                      children: const [
                         Icon(
                           Icons.calendar_today,
                           color: Colors.blue,
@@ -128,23 +129,23 @@ class _TutorCardWidgetState extends State<TutorCardWidget> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 16,
                 ),
                 GestureDetector(
                   onTap: () {
                     Navigator.of(context).push(MaterialPageRoute(
                       builder: (context) => PrivateMessagePage(
-                        name: widget.name,
-                        avatar: widget.avatar,
+                        name: widget.tutorData.name,
+                        avatar: widget.tutorData.avatar ?? "",
                       ),
                     ));
                   },
                   child: Container(
                     decoration: BoxDecoration(border: Border.all(color: Colors.blue), borderRadius: BorderRadius.circular(16)),
-                    padding: EdgeInsets.fromLTRB(12, 4, 12, 4),
+                    padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
                     child: Row(
-                      children: [
+                      children: const [
                         Icon(
                           Icons.message,
                           color: Colors.blue,

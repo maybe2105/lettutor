@@ -1,8 +1,14 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:lettutor/models/user_dto.dart';
 import 'package:lettutor/pages/courses/courses_page.dart';
 import 'package:lettutor/pages/courses/history_page.dart';
 import 'package:lettutor/pages/courses/session_history_page.darr.dart';
+import 'package:lettutor/pages/profile/become_tutor.dart';
 import 'package:lettutor/pages/profile/profile_page.dart';
+import 'package:lettutor/widgets/fullscreen_dialog_widget.dart';
 import 'package:lettutor/widgets/settingitem_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -15,9 +21,33 @@ class SettingPage extends StatefulWidget {
 
 class _SettingPageState extends State<SettingPage> {
 
-  final avatar = "https://static.wikia.nocookie"
-      ".net/lolesports_gamepedia_en/images/f/f5/DWG_ShowMaker_2020_Split_2"
-      ".png/revision/latest/scale-to-width-down/250?cb=20200903154623";
+  UserDTO? user;
+
+  displayDialog(BuildContext context, String title, Widget content) {
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) =>
+            FullScreenDialog(title: title, content: content),
+        fullscreenDialog: true,
+      ),
+    );
+  }
+
+  Future<void> loadJsonData() async {
+    var jsonText = await rootBundle.loadString("assets/user.json");
+    Map<String, dynamic> mapper = jsonDecode(jsonText);
+    UserDTO result = UserDTO.fromJson(mapper);
+    setState(() {
+      user = result;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadJsonData();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -50,22 +80,22 @@ class _SettingPageState extends State<SettingPage> {
                      Padding(
                       padding:const EdgeInsets.symmetric(horizontal: 16),
                       child: Image(
-                        image: NetworkImage(avatar),
+                        image: NetworkImage(user?.avatar ?? "https://previews.123rf.com/images/latkun/latkun1712/latkun171200130/92172856-empty-transparent-background-seamless-pattern.jpg"),
                         width: 60,
                         height: 60,
                       ),
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
+                      children:  [
                         Text(
-                          "Nguyễn Khắc Luân",
-                          style: TextStyle(
+                          user?.name ?? "",
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text("luannguyen210500@gmail.com")
+                        Text(user?.email ?? "")
                       ],
                     )
                   ],
@@ -112,7 +142,13 @@ class _SettingPageState extends State<SettingPage> {
               SettingItem(
                 icon: Icons.settings,
                 text: "Advanced Settings",
-                onClick: () {},
+                onClick: () {
+                  displayDialog(
+                    context,
+                    "Become A Tutor",
+                    const BecomeTutorPage(),
+                  );
+                },
               ),
               const SizedBox(
                 height: 28,

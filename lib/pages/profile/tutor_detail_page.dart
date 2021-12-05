@@ -1,6 +1,8 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:lettutor/models/tutor_dto.dart';
 import 'package:lettutor/pages/schedule/private_message_page.dart';
 import 'package:lettutor/widgets/booking_dialog.dart';
 import 'package:lettutor/widgets/expandable_text.dart';
@@ -9,15 +11,14 @@ import 'package:lettutor/widgets/report_dialog.dart';
 import 'package:lettutor/widgets/reviews_dialog.dart';
 import 'package:lettutor/widgets/rounded_avatar_widget.dart';
 import 'package:lettutor/widgets/tag.dart';
+import 'package:lettutor/widgets/taglist_widget.dart';
 import 'package:lettutor/widgets/time_table.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class TutorDetailPage extends StatefulWidget {
-  const TutorDetailPage({Key? key, this.name, this.avatar, this.star}) : super(key: key);
+  const TutorDetailPage({Key? key, required this.tutor}) : super(key: key);
 
-  final name;
-  final avatar;
-  final star;
+  final TutorDTO tutor;
 
   @override
   _TutorDetailPageState createState() => _TutorDetailPageState();
@@ -25,6 +26,15 @@ class TutorDetailPage extends StatefulWidget {
 
 class _TutorDetailPageState extends State<TutorDetailPage> {
   var isFavorite = false;
+
+  double getTotalRating() {
+    double result = 0;
+    for (var i = 0; i < widget.tutor.feedbacks!.length; i++) {
+      result = result + widget.tutor.feedbacks!.elementAt(i).rating!;
+    }
+
+    return result / widget.tutor.feedbacks!.length;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,7 +70,7 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                 children: [
                   Row(
                     children: [
-                      CustomCircleAvatar(dimension: 100, avatarUrl: widget.avatar),
+                      CustomCircleAvatar(dimension: 100, avatarUrl: widget.tutor.avatar ?? ""),
                       const SizedBox(
                         width: 8,
                       ),
@@ -68,9 +78,9 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                         padding: const EdgeInsets.symmetric(horizontal: 16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                             Text(
-                              widget.name,
+                          children: <Widget>[
+                            Text(
+                              widget.tutor.name ?? "",
                               style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                             ),
                             Padding(
@@ -78,7 +88,7 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                                 child: Row(
                                   children: [
                                     RatingBar.builder(
-                                      initialRating: widget.star ?? 5,
+                                      initialRating: getTotalRating(),
                                       ignoreGestures: true,
                                       itemSize: 20,
                                       minRating: 1,
@@ -91,12 +101,21 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                                       ),
                                       onRatingUpdate: (rating) {},
                                     ),
-                                    Text("(2)")
+                                    const Text("(2)")
                                   ],
                                 )),
-                            const Text(
-                              "🇻🇳 Việt Nam",
-                              style: TextStyle(fontSize: 18),
+                            SizedBox(
+                              width: 150,
+                              child: CountryCodePicker(
+                                alignLeft: true,
+                                initialSelection: widget.tutor.country ?? "VN",
+                                showOnlyCountryWhenClosed: true,
+                                enabled: false,
+                                textStyle: TextStyle(
+                                  fontSize: 14,
+                                ),
+                                padding: EdgeInsets.all(0),
+                              ),
                             ),
                           ],
                         ),
@@ -106,10 +125,7 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                   const SizedBox(
                     height: 8,
                   ),
-                  const ExpandableText(
-                      content:
-                          "Lorem ipsum sample text this is description of tutor.Lorem ipsum sample text this is description of "
-                          "tutor is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic"),
+                  ExpandableText(content: widget.tutor.bio ?? ""),
                   const SizedBox(
                     height: 8,
                   ),
@@ -120,8 +136,8 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => PrivateMessagePage(
-                              name: widget.name,
-                              avatar: widget.avatar,
+                              name: widget.tutor.name,
+                              avatar: widget.tutor.avatar ?? "",
                             ),
                           ));
                         },
@@ -162,7 +178,7 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                           showDialog(
                             context: context,
                             builder: (context) => ReportDialog(
-                              name: widget.name,
+                              name: widget.tutor.name,
                             ),
                           );
                         },
@@ -216,26 +232,10 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                    child: Wrap(
-                      children: const [
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 0, 8, 8),
-                          child: Tag(
-                            text: 'Vietnamese',
-                            isActive: true,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 0, 8, 8),
-                          child: Tag(
-                            text: 'English',
-                            isActive: true,
-                          ),
-                        ),
-                        Padding(
-                          padding: EdgeInsets.fromLTRB(0, 0, 8, 8),
-                        ),
-                      ],
+                    child:  TagsList(
+                        tagsList: widget.tutor.languages!.split(",").toList(),
+                        selectFirstItem: false,
+                        readOnly: true,
                     ),
                   ),
                   const Text(

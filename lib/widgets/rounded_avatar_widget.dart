@@ -3,9 +3,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class CustomCircleAvatar extends StatelessWidget {
-  const CustomCircleAvatar({Key? key, required this.avatarUrl, this.dimension})
+  const CustomCircleAvatar({Key? key,  this.avatarUrl = "", this.dimension})
       : super(key: key);
-  final String avatarUrl;
+   final String avatarUrl ;
   final double? dimension;
 
   @override

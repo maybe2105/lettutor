@@ -1,0 +1,81 @@
+{
+  "id": "c8af4691-9321-47a5-acb7-59986955cb76",
+  "email": "qson.ng@gmail.com",
+  "name": "Son Nguyen",
+  "avatar": "https://lh3.googleusercontent.com/a-/AOh14GgezOce8ihOcUZH_qmv9l1F2qtCu7w6hvpLbxvbIg=s96-c",
+  "country": "VN",
+  "phone": "0288888888",
+  "roles": [
+    "student",
+    "tutor",
+    "CHANGE_PASSWORD"
+  ],
+  "language": null,
+  "birthday": "1999-12-01",
+  "isActivated": true,
+  "tutorInfo": {
+    "id": "c99d99b0-faf8-4b01-b0d9-9ec465c5ebe0",
+    "userId": "c8af4691-9321-47a5-acb7-59986955cb76",
+    "video": "https://dev.api.lettutor.com/video/c8af4691-9321-47a5-acb7-59986955cb76video1634479641727.mov",
+    "bio": "Nothing",
+    "education": "Nothing",
+    "experience": "Nothing",
+    "profession": "Nothing",
+    "accent": null,
+    "targetStudent": "Beginner",
+    "interests": "Nothing",
+    "languages": "Nothing",
+    "specialties": "starters",
+    "resume": null,
+    "isActivated": true,
+    "isNative": false,
+    "createdAt": "2021-10-17T14:07:22.108Z",
+    "updatedAt": "2021-10-17T14:07:22.108Z"
+  },
+  "walletInfo": {
+    "id": "0a4d5ff9-49ca-4e6c-b5be-52b38f0c9e38",
+    "userId": "c8af4691-9321-47a5-acb7-59986955cb76",
+    "amount": "50000",
+    "isBlocked": false,
+    "createdAt": "2021-08-04T14:27:50.367Z",
+    "updatedAt": "2021-10-23T12:52:00.526Z",
+    "bonus": 0
+  },
+  "feedbacks": [],
+  "courses": [],
+  "requireNote": "aaaa",
+  "level": "BEGINNER",
+  "learnTopics": [
+    {
+      "id": 5,
+      "key": "conversational-english",
+      "name": "Conversational English"
+    }
+  ],
+  "testPreparations": [],
+  "isPhoneActivated": true,
+  "timezone": 7,
+  "referralInfo": {
+    "id": 151,
+    "referralCode": "R5DI68A3MY",
+    "userId": "c8af4691-9321-47a5-acb7-59986955cb76",
+    "referralPackId": 1,
+    "createdAt": "2021-10-14T15:40:03.878Z",
+    "updatedAt": "2021-10-14T15:40:03.878Z",
+    "referralPackInfo": {
+      "id": 1,
+      "earnPercent": 5,
+      "isActive": true,
+      "createdAt": "2021-09-29T14:14:48.290Z",
+      "updatedAt": "2021-09-29T14:14:48.290Z"
+    }
+  },
+  "avgRating": 0,
+  "priceOfEachSession": {
+    "id": "0e5574d5-922f-4809-8af1-a06ed3205188",
+    "key": "pricePerSession",
+    "price": "100000",
+    "createdAt": "2021-06-10T14:53:56.032Z",
+    "updatedAt": "2021-06-10T14:53:56.032Z"
+  }
+}

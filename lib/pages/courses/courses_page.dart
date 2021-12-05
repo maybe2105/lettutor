@@ -164,7 +164,7 @@ class _CoursesPageState extends State<CoursesPage> {
                               banner: "assets/intermediate.png")),
                     );
                   },
-                  child: CoursesItem(
+                  child: const CoursesItem(
                     title: "Intermediate Conversation Topics (New)",
                     subTitle: "Express your ideas and opinions",
                     lesson: "10",
@@ -176,7 +176,7 @@ class _CoursesPageState extends State<CoursesPage> {
             ),
             const Padding(
               padding: const EdgeInsets.symmetric(vertical: 16),
-              child: const Text(
+              child: Text(
                 "Controversional English",
                 style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
               ),

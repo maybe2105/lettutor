@@ -1,4 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:lettutor/models/tutor_dto.dart';
+import 'package:lettutor/widgets/tutorcard_nofavorite_widget.dart';
 import 'package:lettutor/widgets/tutorcard_widget.dart';
 
 class HomePage extends StatefulWidget {
@@ -9,6 +14,27 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  List<TutorDTO> tutors = [];
+
+  @override
+  void initState() {
+    super.initState();
+    loadJsonData();
+  }
+
+  Future<void> loadJsonData() async {
+    var jsonText = await rootBundle.loadString("assets/tutor.json");
+    Iterable i = jsonDecode(jsonText);
+    List<TutorDTO>? result =
+    List<TutorDTO>.from(i.map((tutor) => TutorDTO.fromJson(tutor)));
+    setState(() {
+      if (result == null) {
+        tutors = [];
+      } else {
+        tutors = result;
+      }
+    });
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,23 +88,12 @@ class _HomePageState extends State<HomePage> {
               style: TextStyle(color: Colors.grey, fontSize: 16),
             ),
           ),
-          const TutorCardWidget(
-            name: "Luân Nguyễn",
-            avatar: "https://www.pngkit.com/png/full/192-1924580_spoderman-transparent-gif-spooderman-original.png",
-            content:
-                "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy te"
-                "xt ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It ha",
-            isFavorite: true,
-            star: 2.5,
-          ),
-          const TutorCardWidget(
-            name: "Luân đẹp trai",
-            avatar: "https://static.wikia.nocookie.net/lolesports_gamepedia_en/images/f/f5/DWG_ShowMaker_2020_Split_2.png/revision/latest/scale-to-width-down/250?cb=20200903154623",
-            content:
-            "is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy te"
-                "xt ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It ha",
-            isFavorite: true,
-            star: 5,
+          ListView(
+            shrinkWrap: true,
+            primary: false,
+            children: tutors
+                .map((tutor) => TutorCardWidget(tutorData: tutor))
+                .toList(),
           ),
         ],
       ),
