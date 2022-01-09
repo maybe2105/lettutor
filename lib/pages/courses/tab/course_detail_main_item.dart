@@ -28,7 +28,7 @@ class _CourseDetailMainItemState extends State<CourseDetailMainItem> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
-            child: Image.asset(
+            child: Image.network(
               widget.banner,
             ),
           ),
@@ -40,16 +40,13 @@ class _CourseDetailMainItemState extends State<CourseDetailMainItem> {
             ),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.fromLTRB( 16,0,16,16),
             child: Text(
               widget.subTitle,
               style: TextStyle(color: Colors.grey, fontSize: 14),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: PrimaryButton(isDisabled: false, onPressed: (){}, text: "Discover"),
-          )
+
         ],
       ),
     );

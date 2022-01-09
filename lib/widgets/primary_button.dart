@@ -59,7 +59,7 @@ class _PrimaryButtonState extends State<PrimaryButton> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 icon,
-                Text(widget.text, style: const TextStyle(color: Colors.white),)
+                Text(widget.text, style: const TextStyle(color: Colors.white,fontWeight: FontWeight.bold),)
               ],
             ),
           )

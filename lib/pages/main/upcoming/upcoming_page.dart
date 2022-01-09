@@ -1,7 +1,14 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lettutor/models/schedule.dart';
+import 'package:lettutor/services/auth_provider.dart';
+import 'package:lettutor/services/http.dart';
+import 'package:lettutor/widgets/customize_button.dart';
 import 'package:lettutor/widgets/history_card.dart';
 import 'package:lettutor/widgets/upcoming_card.dart';
+import 'package:provider/provider.dart';
 
 class UpcomingPage extends StatefulWidget {
   const UpcomingPage({Key? key}) : super(key: key);
@@ -11,6 +18,50 @@ class UpcomingPage extends StatefulWidget {
 }
 
 class _UpcomingPageState extends State<UpcomingPage> {
+  bool loading = true;
+  int page = 1;
+  int perPage = 5;
+  int count = 0;
+  List<Schedule> scheduleList = [];
+
+  Future<void> getSchedules(bool resetList) async {
+    try {
+      setState(() {
+        if (resetList == true) {
+          scheduleList.clear();
+          page = 1;
+        }
+        loading = true;
+      });
+      var dio = Http().client;
+      var accessToken = Provider.of<AuthProvider>(context, listen: false).auth.tokens!.access!.token;
+      dio.options.headers["Authorization"] = "Bearer $accessToken";
+      var query = {
+        'page': page,
+        'perPage': perPage,
+        'dateTimeGte': DateTime.now().millisecondsSinceEpoch,
+        'orderBy': 'meeting',
+        'sortBy': 'asc'
+      };
+      var res = await dio.get("booking/list/student", queryParameters: query);
+      Iterable i = res.data["data"]["rows"];
+      List<Schedule> data = List<Schedule>.from(i.map((schedule) => Schedule.fromJson(schedule)));
+      setState(() {
+        scheduleList.addAll(data);
+        count = res.data["data"]["count"];
+        loading = false;
+      });
+    } catch (e) {
+      inspect(e);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    getSchedules(true);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,7 +91,7 @@ class _UpcomingPageState extends State<UpcomingPage> {
             ),
           ),
           const Text(
-            "Lịch đã đặt",
+            "Schedule",
             textAlign: TextAlign.center,
             style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24),
           ),
@@ -51,41 +102,64 @@ class _UpcomingPageState extends State<UpcomingPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: const [
-                Text("Đây là danh sách những khung giờ bạn đã đặt", style: TextStyle(fontSize: 20, color: Colors.grey)),
+                Text("Here is a list of the sessions you have booked", style: TextStyle(fontSize: 20, color: Colors.grey)),
                 Text(
-                    "Bạn có thể theo dõi khi nào buổi học bắt đầu, tham gia buổi học bằng một cú nhấp chuột hoặc có thể hủy buổi học trước 2 tiếng.",
+                    "You can track when the meeting starts, join the meeting with one click or can cancel the meeting before 2 hours",
                     style: TextStyle(fontSize: 20, color: Colors.grey))
               ],
             ),
           ),
-          const UpcomingCard(
-              time: "T6,22 Thng 10,21",
-              duration: 25,
-              country: "Vietnam",
-              countryTag: "🇻🇳",
-              name: "Luân Nguyễn",
-              review: "Gia sư tạm được",
-              avatar: "https://static.wikia.nocookie.net/lolesports_gamepedia_en/images/e/eb/DWG_ShowMaker_2019_Split_1"
-                  ".png/revision/latest/scale-to-width-down/250?cb=20190722060549"),
-          const UpcomingCard(
-              time: "T5,22 Thng 9,21",
-              duration: 30,
-              country: "Russia",
-              countryTag: "🇷🇺",
-              name: "Daniel Ishutin",
-              review: "Gia sư pro",
-              avatar: "https://cdn.vox-cdn.com/thumbor/GdW2s_q8FXW1s_jhP1XCUm7eZ_k=/0x0:492x554/1200x800/filters:focal"
-                  "(184x147:262x225)/cdn.vox-cdn.com/uploads/chorus_image/image/61133845/dendi_navi.0.png"),
-          const UpcomingCard(
-              time: "T5,22 Thng 8,21",
-              duration: 15,
-              country: "Korea",
-              countryTag: "🇰🇷",
-              name: "Jeong Ji-hoon ",
-              requirement: "Test requirement 3",
-              review: "Gia sư hay",
-              avatar:
-                  "https://static.wikia.nocookie.net/lolesports_gamepedia_en/images/0/02/HLE_Chovy_2021_Split_2.png/revision/latest?cb=20210610234156"),
+          Container(
+            child: scheduleList.length > 0
+                ? ListView(
+                    shrinkWrap: true,
+                    primary: false,
+                    children: scheduleList
+                        .map(
+                          (e) => UpcomingCard(
+                            schedule: e,
+                            onUpdate: () async {
+                              await getSchedules(true);
+                            },
+                          ),
+                        )
+                        .toList(),
+                  )
+                : loading == true
+                    ? Container()
+                    : Container(
+                        child: Text(
+                          "No data",
+                          style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                        ),
+                        alignment: Alignment.center,
+                        padding: EdgeInsets.only(top: 20),
+                      ),
+          ),
+          page * perPage < count && loading == false
+              ? Container(
+                  child: CustomizedButton(
+                    btnText: "Load more",
+                    onTap: () async {
+                      setState(() {
+                        page = page + 1;
+                      });
+                      await getSchedules(false);
+                    },
+                    hasBorder: false,
+                    textSize: 20,
+                  ),
+                  margin: EdgeInsets.only(
+                    top: 16,
+                    bottom: 4,
+                  ),
+                )
+              : Container(),
+          loading == true
+              ? Center(
+                  child: CircularProgressIndicator(),
+                )
+              : Container(),
         ],
       ),
     );

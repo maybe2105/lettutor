@@ -8,6 +8,7 @@ import 'package:lettutor/pages/main/main_page.dart';
 import 'package:lettutor/pages/profile/profile_page.dart';
 import 'package:lettutor/pages/profile/tutor_detail_page.dart';
 import 'package:lettutor/pages/schedule/timetable_page.dart';
+import 'package:lettutor/widgets/boilder_plate.dart';
 
 void main() {
   runApp(const MyApp());
@@ -36,7 +37,7 @@ class MyApp extends StatelessWidget {
         ),
         primarySwatch: Colors.blue,
       ),
-      home: const MainPage(),
+      home: const BoilerPlate(page:LoginPage()),
 
     );
   }

@@ -8,7 +8,12 @@ class CustomizedButton extends StatefulWidget {
     this.btnText = "",
     this.icon,
     this.textSize = 14,
-    this.borderRadius = 32,Function()? onTap,
+    this.borderRadius = 32,
+    this.onTap,
+    this.isDisabled = false,
+    this.verticalPadding = 4,
+    this.horizontalPadding = 16,
+    this.hasBorder = true,
   }) : super(key: key);
   final Color background;
   final Color primaryColor;
@@ -16,6 +21,12 @@ class CustomizedButton extends StatefulWidget {
   final String btnText;
   final double textSize;
   final double borderRadius;
+  final Function? onTap;
+  final bool isDisabled;
+  final double horizontalPadding;
+  final double verticalPadding;
+  final bool hasBorder;
+
   @override
   _CustomizedButtonState createState() => _CustomizedButtonState();
 }
@@ -26,13 +37,21 @@ class _CustomizedButtonState extends State<CustomizedButton> {
     return TextButton(
         style: TextButton.styleFrom(
           backgroundColor: widget.background,
-          shape: RoundedRectangleBorder(
-            side: BorderSide(
-                color: widget.primaryColor, width: 1, style: BorderStyle.solid),
-            borderRadius: BorderRadius.circular(widget.borderRadius),
-          ),
+          shape: widget.hasBorder == false
+              ? null
+              : RoundedRectangleBorder(
+                  side: BorderSide(
+                      color: widget.isDisabled == true ? Colors.white24 : widget.primaryColor,
+                      width: 1,
+                      style: BorderStyle.solid),
+                  borderRadius: BorderRadius.circular(widget.borderRadius),
+                ),
         ),
-        onPressed: () {},
+        onPressed: () {
+          if (widget.isDisabled == false) {
+            widget.onTap!();
+          }
+        },
         child: Container(
           padding: EdgeInsets.fromLTRB(16, 4, 16, 4),
           child: Row(

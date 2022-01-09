@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lettutor/models/course.dart';
 
 class CoursesItem extends StatefulWidget {
-  const CoursesItem({Key? key, this.banner, this.title, this.subTitle, this.level, this.lesson}) : super(key: key);
+  const CoursesItem({Key? key, this.data, }) : super(key: key);
 
-  final banner;
-  final title;
-  final subTitle;
-  final level;
-  final lesson;
+  final Course? data;
 
   @override
   _CoursesItemState createState() => _CoursesItemState();
@@ -27,8 +24,8 @@ class _CoursesItemState extends State<CoursesItem> {
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
-            child: Image.asset(
-              widget.banner,
+            child: Image.network(
+              widget.data!.imageUrl!,
               height: 200,
               width: 260,
             ),
@@ -36,20 +33,20 @@ class _CoursesItemState extends State<CoursesItem> {
           Padding(
             padding: const EdgeInsets.all(16),
             child: Text(
-              widget.title,
+              widget.data!.name!,
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Text(
-              widget.subTitle,
+              widget.data!.description!,
               style: TextStyle(color: Colors.grey, fontSize: 14),
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(16),
-            child: Text(widget.level + " • " + widget.lesson + " Lessons"),
+            child: Text(widget.data!.categories!.elementAt(0).key!+ " • " +  widget.data!.topics!.length.toString() + " Lessons"),
           )
         ],
       ),

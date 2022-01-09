@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:lettutor/pages/authen/signup_form.dart';
+import 'package:lettutor/widgets/boilder_plate.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+
+import 'login_page.dart';
 
 class SignupPage extends StatefulWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -10,15 +14,7 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPage extends State<SignupPage> {
-  late bool _obscureText = true;
 
-  late String _password;
-
-  void _toggle() {
-    setState(() {
-      _obscureText = !_obscureText;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,44 +58,8 @@ class _SignupPage extends State<SignupPage> {
                     style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
                     textAlign: TextAlign.center),
               ),
-              const Padding(
-                padding: EdgeInsets.fromLTRB(32, 0, 32, 0),
-                child: TextField(
-                  decoration: InputDecoration(
-                      labelText: "email", border: OutlineInputBorder()),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.fromLTRB(32, 16, 32, 0),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                      labelText: 'Password',
-                      border: const OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        iconSize: 32,
-                        icon: _obscureText
-                            ? const Icon(MdiIcons.eyeOutline)
-                            : const Icon(MdiIcons.eyeOffOutline),
-                        onPressed: _toggle,
-                      )),
-                  validator: (val) =>
-                  val!.length < 6 ? 'Password too short.' : null,
-                  onSaved: (val) => _password = val!,
-                  obscureText: _obscureText,
-                ),
-              ),
-              const SizedBox(height: 16,),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32),
-                child: ElevatedButton(
-                  onPressed: () => {},
-                  child: const Text('SIGN UP',style: TextStyle(color:Colors.white),),
-                  style: ElevatedButton.styleFrom(
-                    minimumSize: const Size(double.infinity, 40),
-                    primary: Colors.blueAccent, // This is what you need!
-                  ),
-                ),
-              ),
+
+              SignUpForm(),
               const Center(child: Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Text("Or continue with",style:TextStyle(fontSize: 16)),
@@ -119,17 +79,36 @@ class _SignupPage extends State<SignupPage> {
                 ),
               ),
               const SizedBox(height: 16),
-              RichText(
-                textAlign: TextAlign.center,
-                text: const TextSpan(
-                    text: 'Already have an account? ',
-                    style: TextStyle(
-                        color: Colors.black, fontWeight: FontWeight.w500),
-                    children: [
-                      TextSpan(
-                          text: 'Log in',
-                          style: TextStyle(color: Colors.blue))
-                    ]),
+              InkWell(
+                child: Container(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: const [
+                      Text(
+                        "Already have an account? ",
+                        style: TextStyle(
+                          fontSize: 16,
+                        ),
+                      ),
+                      Text(
+                        "Login",
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Color(0xff2862d2),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                onTap: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => BoilerPlate(
+                        page: LoginPage(),
+                      ),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 32),
             ]),

@@ -2,17 +2,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:lettutor/widgets/rounded_avatar_widget.dart';
 
+import 'package:lettutor/models/feedback.dart' as feedbackModel;
+import 'package:timeago/timeago.dart' as timeago;
+
 class UserReview extends StatelessWidget {
-  const UserReview({Key? key, required this.username, required this.content, required this.rating}) : super(key: key);
-  final username;
-  final content;
-  final rating;
+  const UserReview({
+    Key? key,
+    required this.data,
+  }) : super(key: key);
+
+  final feedbackModel.Feedback data;
+
+
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        const CustomCircleAvatar(dimension: 32, avatarUrl: 'https://static.wikia.nocookie.net/lolesports_gamepedia_en/images/0/02/HLE_Chovy_2021_Split_2.png/revision/latest?cb=20210610234156'),
+        CustomCircleAvatar(
+          dimension: 32,
+          avatarUrl: data.firstInfo!.avatar ?? "",
+        ),
         const SizedBox(
           width: 12,
         ),
@@ -22,20 +32,20 @@ class UserReview extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  username,
+                  data.firstInfo!.name ?? "default",
                   style: const TextStyle(color: Colors.black54),
                 ),
                 const SizedBox(
                   width: 4,
                 ),
-                const Text(
-                  '1 day ago',
+                Text(
+                  timeago.format(data.createdAt!),
                   style: TextStyle(color: Colors.black12),
                 )
               ],
             ),
             RatingBar.builder(
-              initialRating: rating,
+              initialRating: data.rating!.toDouble(),
               ignoreGestures: true,
               itemSize: 20,
               minRating: 1,
@@ -48,7 +58,9 @@ class UserReview extends StatelessWidget {
               ),
               onRatingUpdate: (rating) {},
             ),
-            Text(content)
+            Text(
+              data.content ?? "",
+            )
           ],
         )
       ],

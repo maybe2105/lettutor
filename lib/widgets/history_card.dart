@@ -1,22 +1,18 @@
+import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:lettutor/models/schedule.dart';
 import 'package:lettutor/widgets/rounded_avatar_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 class HistoryCard extends StatefulWidget {
-  const HistoryCard({Key? key, this.time, this.duration, this.name, this.country, this.countryTag, this.requirement, this.review, this.avatar})
-      : super(key: key);
+  const HistoryCard({
+    Key? key,
+    required this.schedule,
+  }) : super(key: key);
 
-  final time;
-
-  final duration;
-
-  final name;
-  final country;
-  final countryTag;
-  final avatar;
-
-  final requirement;
-  final review;
+  final Schedule schedule;
 
   @override
   _HistoryCardState createState() => _HistoryCardState();
@@ -35,7 +31,11 @@ class _HistoryCardState extends State<HistoryCard> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            widget.time,
+            DateFormat(
+              'EE, dd MMM y',
+            ).format(
+              DateTime.fromMillisecondsSinceEpoch(widget.schedule.scheduleDetailInfo?.startPeriodTimestamp ?? 0),
+            ),
             style: const TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 22,
@@ -45,7 +45,7 @@ class _HistoryCardState extends State<HistoryCard> {
             height: 8,
           ),
           Text(
-            "1 day ago",
+            timeago.format(DateTime.fromMillisecondsSinceEpoch(widget.schedule.scheduleDetailInfo?.startPeriodTimestamp ?? 0)),
             style: const TextStyle(fontSize: 14, color: Colors.grey),
           ),
           Container(
@@ -56,8 +56,8 @@ class _HistoryCardState extends State<HistoryCard> {
             padding: EdgeInsets.all(12),
             child: Row(
               children: [
-                 CustomCircleAvatar(
-                  avatarUrl: widget.avatar,
+                CustomCircleAvatar(
+                  avatarUrl: widget.schedule.scheduleDetailInfo?.scheduleInfo?.tutorInfo?.avatar ?? "",
                   dimension: 75,
                 ),
                 SizedBox(
@@ -68,12 +68,17 @@ class _HistoryCardState extends State<HistoryCard> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      widget.name,
+                      widget.schedule.scheduleDetailInfo?.scheduleInfo?.tutorInfo?.name ?? "",
                       style: TextStyle(fontWeight: FontWeight.bold, fontSize: 22),
                     ),
-                    Text(
-                      widget.countryTag + " " + widget.country,
-                      style: TextStyle(fontSize: 18),
+                    Container(
+                      child: CountryCodePicker(
+                        initialSelection: widget.schedule.scheduleDetailInfo?.scheduleInfo?.tutorInfo?.country ?? "VN",
+                        showOnlyCountryWhenClosed: true,
+                        enabled: false,
+                        padding: EdgeInsets.all(0),
+                        alignLeft: false,
+                      ),
                     ),
                     Row(
                       children: const [
@@ -85,7 +90,7 @@ class _HistoryCardState extends State<HistoryCard> {
                           width: 8,
                         ),
                         Text(
-                          "Nhắn tin",
+                          "Message",
                           style: TextStyle(color: Colors.blue),
                         )
                       ],
@@ -103,7 +108,10 @@ class _HistoryCardState extends State<HistoryCard> {
             padding: EdgeInsets.all(16),
             margin: EdgeInsets.symmetric(vertical: 8),
             child: Text(
-              "Thời gian bài học: " + widget.duration.toString(),
+              "Lesson Time: " +
+                  (widget.schedule.scheduleDetailInfo?.startPeriod ?? "00: 00") +
+                  " - " +
+                  (widget.schedule.scheduleDetailInfo?.endPeriod ?? "00: 00"),
               style: TextStyle(fontSize: 20),
             ),
           ),
@@ -117,11 +125,15 @@ class _HistoryCardState extends State<HistoryCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
-                  children: [Text("Yêu cầu buổi học", style: TextStyle(fontSize: 18)), Spacer(), Icon(Icons.arrow_drop_down)],
+                  children: [Text("Requirements", style: TextStyle(fontSize: 18)), Spacer(), Icon(Icons.arrow_drop_down)],
                 ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8),
-                  child: Text(widget.requirement, style: TextStyle(fontSize: 16)),
+                  child: Text(
+                      widget.schedule.studentRequest == null
+                          ? "No requirement for student"
+                          : (widget.schedule.studentRequest ?? ""),
+                      style: TextStyle(fontSize: 16)),
                 )
               ],
             ),
@@ -132,7 +144,8 @@ class _HistoryCardState extends State<HistoryCard> {
             ),
             width: double.infinity,
             padding: EdgeInsets.all(16),
-            child: Text(widget.review, style: TextStyle(fontSize: 18)),
+            child: Text(widget.schedule.tutorReview == null ? "No review for this tutor" : (widget.schedule.tutorReview ?? ""),
+                style: TextStyle(fontSize: 18)),
           )
         ],
       ),

@@ -13,13 +13,7 @@ class _CourseTabState extends State<CourseTab> {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        CoursesItem(
-          title: "Basic Conversation Topics (New)",
-          subTitle: "Gain confidence speaking about familiar topics",
-          lesson: "10r",
-          level: "Beginner",
-          banner: "asset/beginner.png",
-        )
+        SizedBox(width: 0,)
       ],
     );
   }

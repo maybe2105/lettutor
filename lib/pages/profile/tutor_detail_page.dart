@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:country_code_picker/country_code_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:lettutor/models/tutor_dto.dart';
+import 'package:lettutor/models/tutor.dart';
 import 'package:lettutor/pages/schedule/private_message_page.dart';
+import 'package:lettutor/services/auth_provider.dart';
+import 'package:lettutor/services/http.dart';
 import 'package:lettutor/widgets/booking_dialog.dart';
 import 'package:lettutor/widgets/expandable_text.dart';
 import 'package:lettutor/widgets/primary_button.dart';
@@ -14,50 +18,83 @@ import 'package:lettutor/widgets/tag.dart';
 import 'package:lettutor/widgets/taglist_widget.dart';
 import 'package:lettutor/widgets/time_table.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
 import 'package:video_player/video_player.dart';
 
 class TutorDetailPage extends StatefulWidget {
-  const TutorDetailPage({Key? key, required this.tutor}) : super(key: key);
+  const TutorDetailPage({Key? key, required this.tutorId}) : super(key: key);
 
-  final TutorDTO tutor;
+  final String tutorId;
 
   @override
   _TutorDetailPageState createState() => _TutorDetailPageState();
 }
 
 class _TutorDetailPageState extends State<TutorDetailPage> {
-  var isFavorite = false;
+  Tutor tutor = new Tutor();
 
-  double getTotalRating() {
-    double result = 0;
-    for (var i = 0; i < widget.tutor.feedbacks!.length; i++) {
-      result = result + widget.tutor.feedbacks!.elementAt(i).rating!;
-    }
-
-    return result / widget.tutor.feedbacks!.length;
-  }
+  bool _isFavorited = false;
 
   VideoPlayerController? videoController;
   Future<void>? initializeVideoPlayerFuture;
 
   @override
   void dispose() {
-    videoController!.dispose();
+    videoController?.dispose();
     super.dispose();
   }
 
   @override
   void initState() {
     super.initState();
-    if(widget.tutor.video != null) {
-      videoController =
-          VideoPlayerController.network(widget.tutor.video ?? "");
-      initializeVideoPlayerFuture =
-          videoController!.initialize();
+    getDetail();
+    if (tutor.video != null) {
+      videoController = VideoPlayerController.network(tutor.video ?? "");
+      initializeVideoPlayerFuture = videoController!.initialize();
       videoController!.setLooping(true);
       videoController!.play();
     }
   }
+
+  void getDetail() {
+    try {
+      print("tutorId: ${widget.tutorId}");
+      var dio = Http().client;
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+        var accessToken = Provider.of<AuthProvider>(context, listen: false).auth.tokens!.access!.token;
+        dio.options.headers["Authorization"] = "Bearer $accessToken";
+        var res = await dio.get(
+          "tutor/${widget.tutorId}",
+        );
+        Tutor data = Tutor.fromJson(res.data);
+        setState(() {
+          tutor = data;
+          _isFavorited = data.isFavorite ?? false;
+        });
+      });
+    } catch (e) {
+      inspect(e);
+    }
+  }
+
+  Future<void> switchFavorite(BuildContext context) async {
+    try {
+      var accessToken = Provider.of<AuthProvider>(context, listen: false).auth.tokens!.access!.token;
+      var dio = Http().client;
+      dio.options.headers["Authorization"] = "Bearer $accessToken";
+      var res = await dio.post(
+        "user/manageFavoriteTutor",
+        data: {'tutorId': tutor.user == null ? tutor.userId : tutor.user!.id},
+      );
+      inspect(res);
+      setState(() {
+        _isFavorited = !_isFavorited;
+      });
+    } catch (e) {
+      inspect(e);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,7 +129,8 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                 children: [
                   Row(
                     children: [
-                      CustomCircleAvatar(dimension: 100, avatarUrl: widget.tutor.avatar ?? ""),
+                      CustomCircleAvatar(
+                          dimension: 100, avatarUrl: tutor.user != null ? tutor.user!.avatar! : (tutor.avatar ?? "")),
                       const SizedBox(
                         width: 8,
                       ),
@@ -101,16 +139,21 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
-                            Text(
-                              widget.tutor.name ?? "",
-                              style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(16,8,16,8),
+                              child: Text(
+                                  tutor.user != null
+                                      ? tutor.user!.name!
+                                      : (tutor.name ?? ""),
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                              ),
                             ),
                             Padding(
-                                padding: const EdgeInsets.symmetric(vertical: 8),
+                                padding: const EdgeInsets.fromLTRB(16,8,16,8),
                                 child: Row(
                                   children: [
                                     RatingBar.builder(
-                                      initialRating: getTotalRating(),
+                                      initialRating: tutor.avgRating?.toDouble() ?? 0,
                                       ignoreGestures: true,
                                       itemSize: 20,
                                       minRating: 1,
@@ -130,7 +173,7 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                               width: 150,
                               child: CountryCodePicker(
                                 alignLeft: true,
-                                initialSelection: widget.tutor.country ?? "VN",
+                                initialSelection: tutor.country ?? "VN",
                                 showOnlyCountryWhenClosed: true,
                                 enabled: false,
                                 textStyle: TextStyle(
@@ -147,7 +190,7 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                   const SizedBox(
                     height: 8,
                   ),
-                  ExpandableText(content: widget.tutor.bio ?? ""),
+                  ExpandableText(content: tutor.bio ?? ""),
                   const SizedBox(
                     height: 8,
                   ),
@@ -158,8 +201,8 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                         onTap: () {
                           Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => PrivateMessagePage(
-                              name: widget.tutor.name,
-                              avatar: widget.tutor.avatar ?? "",
+                              name: tutor.name,
+                              avatar: tutor.avatar ?? "",
                             ),
                           ));
                         },
@@ -178,19 +221,17 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                       ),
                       GestureDetector(
                         onTap: () {
-                          setState(() {
-                            isFavorite = !isFavorite;
-                          });
+                          switchFavorite(context);
                         },
                         child: Column(
                           children: [
                             Icon(
-                              isFavorite ? Icons.favorite : Icons.favorite_border,
-                              color: isFavorite ? Colors.blue : Colors.blue,
+                              _isFavorited ? Icons.favorite : Icons.favorite_border,
+                              color: _isFavorited ? Colors.red : Colors.blue,
                             ),
                             Text(
                               'Favorite',
-                              style: TextStyle(color: isFavorite ? Colors.blue : Colors.blue),
+                              style: TextStyle(color: _isFavorited ? Colors.blue : Colors.blue),
                             )
                           ],
                         ),
@@ -200,7 +241,10 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                           showDialog(
                             context: context,
                             builder: (context) => ReportDialog(
-                              name: widget.tutor.name,
+                              name: tutor.name ?? "",
+                                tutorId: tutor.user == null
+                                    ? tutor.userId!
+                                    : tutor.user!.id!,
                             ),
                           );
                         },
@@ -221,7 +265,9 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                         onTap: () {
                           showDialog(
                             context: context,
-                            builder: (context) => const ReviewsDialog(),
+                            builder: (context) =>  ReviewsDialog( feedbacks: tutor.user != null
+                                ? tutor.user!.feedbacks
+                                : tutor.feedbacks,),
                           );
                         },
                         child: Column(
@@ -240,7 +286,7 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                     ],
                   ),
                   const SizedBox(
-                    height: 8,
+                    height: 16,
                   ),
                   initializeVideoPlayerFuture != null
                       ? Container(
@@ -266,6 +312,7 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                           decoration: const BoxDecoration(color: Colors.black54),
                           child: const Center(child: Text("No Video Uploaded")),
                         ),
+                  const SizedBox(height:16),
                   const Text(
                     'Languages',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
@@ -273,7 +320,7 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                     child: TagsList(
-                      tagsList: widget.tutor.languages!.split(",").toList(),
+                      tagsList: tutor.languages?.split(",").toList() ?? [],
                       selectFirstItem: false,
                       readOnly: true,
                     ),
@@ -285,7 +332,7 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
                     child: TagsList(
-                      tagsList: widget.tutor.specialties!.split(",").toList(),
+                      tagsList: tutor.specialties?.split(",").toList() ?? [],
                       selectFirstItem: false,
                       readOnly: true,
                     ),
@@ -310,10 +357,10 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                     'Interests',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                   ),
-                   Padding(
+                  Padding(
                     padding: const EdgeInsets.all(16),
                     child: Text(
-                      widget.tutor.interests ?? "No interest",
+                      tutor.interests ?? "No interest",
                       style: const TextStyle(color: Colors.black45),
                     ),
                   ),
@@ -321,10 +368,10 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                     'Teaching experience',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
                   ),
-                   Padding(
+                  Padding(
                     padding: EdgeInsets.all(16),
                     child: Text(
-                      widget.tutor.experience ?? "No information",
+                      tutor.experience ?? "No information",
                       style: TextStyle(color: Colors.black45),
                     ),
                   ),

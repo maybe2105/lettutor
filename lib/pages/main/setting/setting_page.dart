@@ -2,15 +2,21 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:lettutor/models/user_dto.dart';
+import 'package:lettutor/models/user.dart';
+import 'package:lettutor/pages/authen/login_page.dart';
 import 'package:lettutor/pages/courses/courses_page.dart';
 import 'package:lettutor/pages/courses/history_page.dart';
 import 'package:lettutor/pages/courses/session_history_page.darr.dart';
 import 'package:lettutor/pages/profile/become_tutor.dart';
 import 'package:lettutor/pages/profile/profile_page.dart';
+import 'package:lettutor/services/auth_provider.dart';
+import 'package:lettutor/widgets/boilder_plate.dart';
 import 'package:lettutor/widgets/fullscreen_dialog_widget.dart';
+import 'package:lettutor/widgets/reviews_dialog.dart';
 import 'package:lettutor/widgets/settingitem_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class SettingPage extends StatefulWidget {
   const SettingPage({Key? key}) : super(key: key);
@@ -20,33 +26,27 @@ class SettingPage extends StatefulWidget {
 }
 
 class _SettingPageState extends State<SettingPage> {
+  User user = User();
 
-  UserDTO? user;
-  Future<void> loadJsonData() async {
-    var jsonText = await rootBundle.loadString("assets/user.json");
-    Map<String, dynamic> mapper = jsonDecode(jsonText);
-    UserDTO result = UserDTO.fromJson(mapper);
-    setState(() {
-      user = result;
-    });
-  }
   displayDialog(BuildContext context, String title, Widget content) {
     Navigator.push(
       context,
       MaterialPageRoute<void>(
-        builder: (BuildContext context) =>
-            FullScreenDialog(title: title, content: content),
+        builder: (BuildContext context) => FullScreenDialog(title: title, content: content),
         fullscreenDialog: true,
       ),
     );
   }
 
-
-
   @override
   void initState() {
     super.initState();
-    loadJsonData();
+    WidgetsBinding.instance!.addPostFrameCallback((timeStamp) {
+      var authUser = Provider.of<AuthProvider>(context, listen: false).auth.user;
+      setState(() {
+        user = authUser!;
+      });
+    });
   }
 
   @override
@@ -69,7 +69,7 @@ class _SettingPageState extends State<SettingPage> {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               GestureDetector(
-                onTap: (){
+                onTap: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(builder: (context) => const ProfilePage()),
@@ -77,25 +77,26 @@ class _SettingPageState extends State<SettingPage> {
                 },
                 child: Row(
                   children: [
-                     Padding(
-                      padding:const EdgeInsets.symmetric(horizontal: 16),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
                       child: Image(
-                        image: NetworkImage(user?.avatar ?? "https://previews.123rf.com/images/latkun/latkun1712/latkun171200130/92172856-empty-transparent-background-seamless-pattern.jpg"),
+                        image: NetworkImage(user.avatar ??
+                            "https://previews.123rf.com/images/latkun/latkun1712/latkun171200130/92172856-empty-transparent-background-seamless-pattern.jpg"),
                         width: 60,
                         height: 60,
                       ),
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children:  [
+                      children: [
                         Text(
-                          user?.name ?? "",
+                          user.name ?? "",
                           style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.bold,
                           ),
                         ),
-                        Text(user?.email ?? "")
+                        Text(user.email ?? "")
                       ],
                     )
                   ],
@@ -107,7 +108,14 @@ class _SettingPageState extends State<SettingPage> {
               SettingItem(
                 icon: Icons.person,
                 text: "View Feedbacks",
-                onClick: () {},
+                onClick: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => ReviewsDialog(
+                      feedbacks: user != null ? user.feedbacks : user.feedbacks,
+                    ),
+                  );
+                },
               ),
               SettingItem(
                 icon: Icons.menu,
@@ -141,7 +149,7 @@ class _SettingPageState extends State<SettingPage> {
               ),
               SettingItem(
                 icon: Icons.settings,
-                text: "Advanced Settings",
+                text: "Become A Tutor",
                 onClick: () {
                   displayDialog(
                     context,
@@ -156,12 +164,16 @@ class _SettingPageState extends State<SettingPage> {
               SettingItem(
                 icon: MdiIcons.web,
                 text: "Our website",
-                onClick: () {},
+                onClick: () {
+                  _launchURL("https://lettutor.edu.vn/");
+                },
               ),
               SettingItem(
                 icon: Icons.facebook_outlined,
                 text: "Facebook",
-                onClick: () {},
+                onClick: () {
+                  _launchURL("https://www.facebook.com/lettutorvn/");
+                },
               ),
               const SizedBox(
                 height: 20,
@@ -176,7 +188,16 @@ class _SettingPageState extends State<SettingPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BoilerPlate(
+                          page: LoginPage(),
+                        ),
+                      ),
+                    );
+                  },
                   child: const Text(
                     'Log Out',
                     style: TextStyle(color: Colors.white),
@@ -194,4 +215,8 @@ class _SettingPageState extends State<SettingPage> {
       ),
     );
   }
+}
+
+void _launchURL(_url) async {
+  if (!await launch(_url)) throw 'Could not launch $_url';
 }
