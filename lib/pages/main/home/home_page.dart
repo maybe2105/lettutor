@@ -174,7 +174,7 @@ class _HomePageState extends State<HomePage> {
             shrinkWrap: true,
             primary: false,
             children: tutors
-                .map((tutor) => TutorCardWidget(tutorData: tutor))
+                .map((tutor) => TutorCardWidget(tutorData: tutor,booking: true,))
                 .toList(),
           ),
         ],

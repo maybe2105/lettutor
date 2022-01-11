@@ -115,7 +115,7 @@ class NoFavoriteTutorCard extends StatelessWidget {
                           width: 8,
                         ),
                         Text(
-                          "Đặt lịch",
+                          "Book",
                           style: TextStyle(color: Colors.blue),
                         ),
                       ],

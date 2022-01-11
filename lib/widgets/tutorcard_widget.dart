@@ -4,18 +4,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:lettutor/models/tutor.dart';
 import 'package:lettutor/pages/profile/tutor_detail_page.dart';
+import 'package:lettutor/pages/schedule/book_schedule_dialog.dart';
 import 'package:lettutor/pages/schedule/private_message_page.dart';
 import 'package:lettutor/services/auth_provider.dart';
 import 'package:lettutor/services/http.dart';
+import 'package:lettutor/widgets/fullscreen_dialog_widget.dart';
+import 'package:lettutor/widgets/primary_button.dart';
 import 'package:lettutor/widgets/tutorcardtag_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 
 class TutorCardWidget extends StatefulWidget {
-  const TutorCardWidget({Key? key, required this.tutorData, this.hideFavorite}) : super(key: key);
+  const TutorCardWidget({Key? key, required this.tutorData, this.hideFavorite, this.booking}) : super(key: key);
 
   final Tutor tutorData;
   final bool? hideFavorite;
+  final bool? booking;
 
   @override
   _TutorCardWidgetState createState() => _TutorCardWidgetState();
@@ -23,6 +27,38 @@ class TutorCardWidget extends StatefulWidget {
 
 class _TutorCardWidgetState extends State<TutorCardWidget> {
   bool isFavorited = false;
+
+  displayDialog(BuildContext context, String title, Widget content) {
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (BuildContext context) => FullScreenDialog(title: title, content: content),
+        fullscreenDialog: true,
+      ),
+    ).then((value) {
+      getDetail();
+    });
+  }
+
+  void getDetail() {
+    try {
+      print("tutorId: ${widget.tutorData.id}");
+      var dio = Http().client;
+      WidgetsBinding.instance!.addPostFrameCallback((timeStamp) async {
+        var accessToken = Provider.of<AuthProvider>(context, listen: false).auth.tokens!.access!.token;
+        dio.options.headers["Authorization"] = "Bearer $accessToken";
+        var res = await dio.get(
+          "tutor/${widget.tutorData.id}",
+        );
+        Tutor data = Tutor.fromJson(res.data);
+        setState(() {
+          isFavorited = data.isFavorite ?? false;
+        });
+      });
+    } catch (e) {
+      inspect(e);
+    }
+  }
 
   Future<void> switchFavorite(BuildContext context) async {
     try {
@@ -60,8 +96,7 @@ class _TutorCardWidgetState extends State<TutorCardWidget> {
       },
       child: Card(
         elevation: 10,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8.0)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
         margin: const EdgeInsets.all(16),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -153,6 +188,43 @@ class _TutorCardWidgetState extends State<TutorCardWidget> {
             ),
             const SizedBox(
               height: 16,
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    displayDialog(
+                      context,
+                      "Book",
+                      BookScheduleDialog(
+                        tutorId: widget.tutorData.user == null ? widget.tutorData.userId : widget.tutorData.user!.id,
+                      ),
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(border: Border.all(color: Colors.blue), borderRadius: BorderRadius.circular(16)),
+                    padding: const EdgeInsets.fromLTRB(12, 4, 12, 4),
+                    margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    child: Row(
+                      children: const [
+                        Icon(
+                          Icons.calendar_today,
+                          color: Colors.blue,
+                        ),
+                        SizedBox(
+                          width: 8,
+                        ),
+                        Text(
+                          "Book",
+                          style: TextStyle(color: Colors.blue),
+                        ),
+                      ],
+                    ),
+                  ),
+                )
+              ],
             )
           ],
         ),

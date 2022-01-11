@@ -151,10 +151,9 @@ class _SettingPageState extends State<SettingPage> {
                 icon: Icons.settings,
                 text: "Become A Tutor",
                 onClick: () {
-                  displayDialog(
+                  Navigator.push(
                     context,
-                    "Become A Tutor",
-                    const BecomeTutorPage(),
+                    MaterialPageRoute(builder: (context) => const TutorRegisteringPage()),
                   );
                 },
               ),
