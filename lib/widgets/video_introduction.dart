@@ -175,7 +175,7 @@ class _VideoIntroductionStepState extends State<VideoIntroductionStep> {
               onPressed: () async {
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('We are sending your infomation... Please wait'),
+                    content: Text('Sending request'),
                     duration: Duration(minutes: 10),
                   ),
                 );

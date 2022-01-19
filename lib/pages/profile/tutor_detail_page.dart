@@ -140,16 +140,14 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: <Widget>[
                             Padding(
-                              padding: const EdgeInsets.fromLTRB(16,8,16,8),
+                              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                               child: Text(
-                                  tutor.user != null
-                                      ? tutor.user!.name!
-                                      : (tutor.name ?? ""),
+                                tutor.user != null ? tutor.user!.name! : (tutor.name ?? ""),
                                 style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                               ),
                             ),
                             Padding(
-                                padding: const EdgeInsets.fromLTRB(16,8,16,8),
+                                padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
                                 child: Row(
                                   children: [
                                     RatingBar.builder(
@@ -238,13 +236,13 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                       ),
                       GestureDetector(
                         onTap: () {
+                          var accToken = Provider.of<AuthProvider>(context, listen: false).auth.tokens!.access!.token;
                           showDialog(
                             context: context,
                             builder: (context) => ReportDialog(
                               name: tutor.name ?? "",
-                                tutorId: tutor.user == null
-                                    ? tutor.userId!
-                                    : tutor.user!.id!,
+                              tutorId: tutor.user == null ? tutor.userId! : tutor.user!.id!,
+                              accessToken: accToken ?? "",
                             ),
                           );
                         },
@@ -265,9 +263,9 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                         onTap: () {
                           showDialog(
                             context: context,
-                            builder: (context) =>  ReviewsDialog( feedbacks: tutor.user != null
-                                ? tutor.user!.feedbacks
-                                : tutor.feedbacks,),
+                            builder: (context) => ReviewsDialog(
+                              feedbacks: tutor.user != null ? tutor.user!.feedbacks : tutor.feedbacks,
+                            ),
                           );
                         },
                         child: Column(
@@ -312,7 +310,7 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                           decoration: const BoxDecoration(color: Colors.black54),
                           child: const Center(child: Text("No Video Uploaded")),
                         ),
-                  const SizedBox(height:16),
+                  const SizedBox(height: 16),
                   const Text(
                     'Languages',
                     style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
@@ -375,37 +373,37 @@ class _TutorDetailPageState extends State<TutorDetailPage> {
                       style: TextStyle(color: Colors.black45),
                     ),
                   ),
-                  Row(
-                    children: [
-                      PrimaryButton(
-                        isDisabled: false,
-                        onPressed: () => {},
-                        text: "Today",
-                        width: 120,
-                        height: 40,
-                      ),
-                      IconButton(onPressed: () => {}, icon: const Icon(MdiIcons.chevronLeft)),
-                      IconButton(onPressed: () => {}, icon: const Icon(MdiIcons.chevronRight)),
-                      const Text(
-                        'Oct, 2021',
-                        style: TextStyle(fontSize: 16),
-                      ),
-                    ],
-                  ),
+                  // Row(
+                  //   children: [
+                  //     PrimaryButton(
+                  //       isDisabled: false,
+                  //       onPressed: () => {},
+                  //       text: "Today",
+                  //       width: 120,
+                  //       height: 40,
+                  //     ),
+                  //     IconButton(onPressed: () => {}, icon: const Icon(MdiIcons.chevronLeft)),
+                  //     IconButton(onPressed: () => {}, icon: const Icon(MdiIcons.chevronRight)),
+                  //     const Text(
+                  //       'Oct, 2021',
+                  //       style: TextStyle(fontSize: 16),
+                  //     ),
+                  //   ],
+                  // ),
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              child: TimeTable(
-                onPressBook: () {
-                  showDialog(
-                    context: context,
-                    builder: (context) => const BookingDialog(),
-                  );
-                },
-              ),
-            )
+            // Padding(
+            //   padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            //   child: TimeTable(
+            //     onPressBook: () {
+            //       showDialog(
+            //         context: context,
+            //         builder: (context) => const BookingDialog(),
+            //       );
+            //     },
+            //   ),
+            // )
           ],
         ),
       ),

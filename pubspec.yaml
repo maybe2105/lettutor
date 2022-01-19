@@ -102,6 +102,9 @@ flutter:
     - assets/schedule.json
     - assets/user.json
     - assets/course.json
+    - assets/profile_step.png
+    - assets/approval_step.svg
+    - assets/video_step.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

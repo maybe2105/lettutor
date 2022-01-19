@@ -68,7 +68,7 @@ class _ProfileStepState extends State<ProfileStep> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Image.asset(
-              'assets/become_tutor/profile_step.png',
+              'assets/profile_step.png',
               height: 80,
             ),
             const SizedBox(
